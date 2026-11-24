@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { MedicineCard } from '@/components/MedicineCard';
 import { EmptyState } from '@/components/EmptyState';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/context/AuthContext';
 import type { Medicine } from '@/app/actions/medicines';
 
 interface MedicinesViewProps {
@@ -15,6 +16,7 @@ interface MedicinesViewProps {
 
 export const MedicinesView: React.FC<MedicinesViewProps> = ({ medicines }) => {
   const { t } = useLanguage();
+  const { isGuest } = useAuth();
 
   return (
     <div className="space-y-6">
@@ -23,7 +25,7 @@ export const MedicinesView: React.FC<MedicinesViewProps> = ({ medicines }) => {
         description={t.medicines.description}
       >
         <Link
-          href="/medicines/new"
+          href={isGuest ? "/login?message=guest_restricted" : "/medicines/new"}
           className="inline-flex items-center gap-2 bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-xs"
         >
           <Plus className="w-4 h-4" />

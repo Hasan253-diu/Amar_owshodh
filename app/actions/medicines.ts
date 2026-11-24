@@ -1,8 +1,26 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
+
+async function verifyAuthUser(supabase: any) {
+  const cookieStore = await cookies()
+  const isGuestCookie = cookieStore.get('amar_owshodh_guest')?.value === 'true'
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (isGuestCookie || !user || user.is_anonymous || user.id === 'guest-preview-user') {
+    return {
+      isAllowed: false,
+      user: null,
+      error: 'এই সুবিধাটি ব্যবহার করতে অনুগ্রহ করে লগইন বা রেজিস্ট্রেশন করুন। (Please login or create an account to use this feature.)',
+      requiresAuth: true,
+    }
+  }
+
+  return { isAllowed: true, user }
+}
 
 export interface Medicine {
   id: string
@@ -115,11 +133,11 @@ export async function getMedicineByIdAction(id: string): Promise<ActionResponse<
 
 export async function createMedicineAction(formData: FormData): Promise<ActionResponse<Medicine>> {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { success: false, error: 'অননুমোদিত অনুরোধ' }
+  const authCheck = await verifyAuthUser(supabase)
+  if (!authCheck.isAllowed || !authCheck.user) {
+    return { success: false, error: authCheck.error }
   }
+  const user = authCheck.user
 
   const rawData = {
     name: formData.get('name') as string,
@@ -157,11 +175,11 @@ export async function createMedicineAction(formData: FormData): Promise<ActionRe
 
 export async function updateMedicineAction(id: string, formData: FormData): Promise<ActionResponse<Medicine>> {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { success: false, error: 'অননুমোদিত অনুরোধ' }
+  const authCheck = await verifyAuthUser(supabase)
+  if (!authCheck.isAllowed || !authCheck.user) {
+    return { success: false, error: authCheck.error }
   }
+  const user = authCheck.user
 
   const rawData = {
     name: formData.get('name') as string,
@@ -201,11 +219,11 @@ export async function updateMedicineAction(id: string, formData: FormData): Prom
 
 export async function toggleArchiveMedicineAction(id: string, currentStatus: boolean): Promise<ActionResponse> {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { success: false, error: 'অননুমোদিত অনুরোধ' }
+  const authCheck = await verifyAuthUser(supabase)
+  if (!authCheck.isAllowed || !authCheck.user) {
+    return { success: false, error: authCheck.error }
   }
+  const user = authCheck.user
 
   const { error } = await supabase
     .from('medicines')
@@ -228,11 +246,11 @@ export async function toggleArchiveMedicineAction(id: string, currentStatus: boo
 
 export async function deleteMedicineAction(id: string): Promise<ActionResponse> {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { success: false, error: 'অননুমোদিত অনুরোধ' }
+  const authCheck = await verifyAuthUser(supabase)
+  if (!authCheck.isAllowed || !authCheck.user) {
+    return { success: false, error: authCheck.error }
   }
+  const user = authCheck.user
 
   const { error } = await supabase
     .from('medicines')
@@ -276,11 +294,11 @@ export async function getSchedulesAction(): Promise<ActionResponse<(MedicineSche
 
 export async function createScheduleAction(formData: FormData): Promise<ActionResponse<MedicineSchedule>> {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { success: false, error: 'অননুমোদিত অনুরোধ' }
+  const authCheck = await verifyAuthUser(supabase)
+  if (!authCheck.isAllowed || !authCheck.user) {
+    return { success: false, error: authCheck.error }
   }
+  const user = authCheck.user
 
   const repeatDaysRaw = formData.getAll('repeatDays')
   const repeatDays = repeatDaysRaw.map((d) => parseInt(d as string, 10))
@@ -329,11 +347,11 @@ export async function createScheduleAction(formData: FormData): Promise<ActionRe
 
 export async function toggleScheduleAction(id: string, currentStatus: boolean): Promise<ActionResponse> {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { success: false, error: 'অননুমোদিত অনুরোধ' }
+  const authCheck = await verifyAuthUser(supabase)
+  if (!authCheck.isAllowed || !authCheck.user) {
+    return { success: false, error: authCheck.error }
   }
+  const user = authCheck.user
 
   const { error } = await supabase
     .from('medicine_schedules')
@@ -355,11 +373,11 @@ export async function toggleScheduleAction(id: string, currentStatus: boolean): 
 
 export async function deleteScheduleAction(id: string): Promise<ActionResponse> {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { success: false, error: 'অননুমোদিত অনুরোধ' }
+  const authCheck = await verifyAuthUser(supabase)
+  if (!authCheck.isAllowed || !authCheck.user) {
+    return { success: false, error: authCheck.error }
   }
+  const user = authCheck.user
 
   const { error } = await supabase
     .from('medicine_schedules')

@@ -5,6 +5,7 @@ import { Clock, Check, X, Loader2 } from 'lucide-react'
 import { StatusBadge } from './StatusBadge'
 import { recordIntakeStatusAction, type IntakeLog } from '@/app/actions/intake'
 import { useLanguage } from '@/context/LanguageContext'
+import { useAuth } from '@/context/AuthContext'
 
 interface ReminderCardProps {
   log: IntakeLog
@@ -13,10 +14,15 @@ interface ReminderCardProps {
 
 export const ReminderCard: React.FC<ReminderCardProps> = ({ log, onStatusChanged }) => {
   const { t, formatTime } = useLanguage()
+  const { isGuest } = useAuth()
   const [currentStatus, setCurrentStatus] = useState(log.status)
   const [isUpdating, setIsUpdating] = useState(false)
 
   const handleAction = async (status: 'taken' | 'skipped') => {
+    if (isGuest) {
+      window.location.href = '/login?message=guest_restricted'
+      return
+    }
     setIsUpdating(true)
     try {
       const res = await recordIntakeStatusAction(log.id, status)

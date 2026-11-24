@@ -6,6 +6,7 @@ import { Pill, Calendar, MoreVertical, Archive, Trash2, Edit } from 'lucide-reac
 import { StatusBadge } from './StatusBadge'
 import { toggleArchiveMedicineAction, deleteMedicineAction, type Medicine } from '@/app/actions/medicines'
 import { useLanguage } from '@/context/LanguageContext'
+import { useAuth } from '@/context/AuthContext'
 
 interface MedicineCardProps {
   medicine: Medicine
@@ -14,10 +15,15 @@ interface MedicineCardProps {
 
 export const MedicineCard: React.FC<MedicineCardProps> = ({ medicine, onUpdate }) => {
   const { t, formatDate } = useLanguage()
+  const { isGuest } = useAuth()
   const [showMenu, setShowMenu] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleToggleArchive = async () => {
+    if (isGuest) {
+      window.location.href = '/login?message=guest_restricted'
+      return
+    }
     setIsProcessing(true)
     setShowMenu(false)
     await toggleArchiveMedicineAction(medicine.id, medicine.is_active)
@@ -26,6 +32,10 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({ medicine, onUpdate }
   }
 
   const handleDelete = async () => {
+    if (isGuest) {
+      window.location.href = '/login?message=guest_restricted'
+      return
+    }
     if (!window.confirm(t.medicines.confirmDelete)) return
     setIsProcessing(true)
     setShowMenu(false)

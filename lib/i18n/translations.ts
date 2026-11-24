@@ -36,6 +36,10 @@ export interface Translations {
     disclaimerTitle: string;
     disclaimerText: string;
     footerCopyright: string;
+    guestBannerNotice: string;
+    exitGuestMode: string;
+    guestActionRestricted: string;
+    loginToContinue: string;
     daysOfWeek: string[];
     daysOfWeekShort: string[];
     months: string[];
@@ -85,6 +89,16 @@ export interface Translations {
     submitting: string;
     registerAgreement: string;
     guestDemo: string;
+    resendVerification: string;
+    resending: string;
+    verificationSentSuccess: string;
+    emailNotVerifiedTitle: string;
+    emailNotVerifiedDesc: string;
+    registrationSuccessTitle: string;
+    registrationSuccessDesc: string;
+    checkInboxInstruction: string;
+    emailVerifiedSuccess: string;
+    guestSigningIn: string;
   };
   dashboard: {
     title: string;
@@ -230,12 +244,22 @@ export interface Translations {
     fullName: string;
     fullNamePlaceholder: string;
     emailAddress: string;
+    phoneNumber: string;
+    phoneNumberPlaceholder: string;
+    notProvided: string;
     accountRole: string;
     userRole: string;
     adminRole: string;
     createdAt: string;
     avatarTitle: string;
     avatarDesc: string;
+    uploadPhoto: string;
+    changePhoto: string;
+    removePhoto: string;
+    photoUploadSuccess: string;
+    photoUploadError: string;
+    photoRemoveSuccess: string;
+    guestProfileWarning: string;
     backToDashboard: string;
     logout: string;
     updateSuccess: string;
@@ -309,6 +333,10 @@ export const translations: Record<Language, Translations> = {
       disclaimerTitle: "জরুরি সতর্কতা ও দায়মুক্তি:",
       disclaimerText: "আমার ঔষধ (Amar Owshodh) শুধুমাত্র একটি রিমাইন্ডার ও ব্যক্তিগত রেকর্ড ব্যবস্থাপনা সহায়িকা। এটি কোনো প্রকার রোগ নির্ণয়, প্রেসক্রিপশন প্রদান, ডোজ নির্ধারণ বা চিকিৎসা সংক্রান্ত পরামর্শ দেয় না। সর্বদা নিবন্ধিত চিকিৎসকের নির্দেশ অনুযায়ী ঔষধ গ্রহণ করুন।",
       footerCopyright: "© 2026 আমার ঔষধ (Amar Owshodh). সর্বস্বত্ব সংরক্ষিত।",
+      guestBannerNotice: "আপনি গেস্ট মোডে আছেন। এটি শুধুমাত্র ডেমো ইন্টারফেস দেখার জন্য। ঔষধ বা শিডিউল সংরক্ষণ করতে অনুগ্রহ করে লগইন করুন।",
+      exitGuestMode: "গেস্ট মোড থেকে প্রস্থান",
+      guestActionRestricted: "এই সুবিধাটি ব্যবহার করতে অনুগ্রহ করে লগইন বা রেজিস্ট্রেশন করুন।",
+      loginToContinue: "লগইন / রেজিস্টার করুন",
       daysOfWeek: ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"],
       daysOfWeekShort: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহস্পতি", "শুক্র", "শনি"],
       months: ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"]
@@ -357,7 +385,17 @@ export const translations: Record<Language, Translations> = {
       forgotPassword: "পাসওয়ার্ড ভুলে গেছেন?",
       submitting: "যাচাই করা হচ্ছে...",
       registerAgreement: "নিবন্ধন করার মাধ্যমে আপনি আমাদের শর্তাবলী ও চিকিৎসা বিষয়ক সতর্কবার্তা মেনে নিচ্ছেন।",
-      guestDemo: "গেস্ট হিসেবে ড্যাশবোর্ড দেখুন"
+      guestDemo: "গেস্ট হিসেবে ড্যাশবোর্ড দেখুন",
+      resendVerification: "ভেরিফিকেশন ইমেইল পুনরায় পাঠান",
+      resending: "ইমেইল পাঠানো হচ্ছে...",
+      verificationSentSuccess: "ভেরিফিকেশন ইমেইল পাঠানো হয়েছে! অনুগ্রহ করে আপনার ইনবক্স অথবা স্প্যাম ফোল্ডার চেক করুন।",
+      emailNotVerifiedTitle: "ইমেইল ভেরিফিকেশন বাকি রয়েছে",
+      emailNotVerifiedDesc: "আপনার অ্যাকাউন্ট সক্রিয় করার জন্য ইমেইল ভেরিফাই করা প্রয়োজন। অনুগ্রহ করে আপনার ইনবক্স চেক করুন অথবা পুনরায় লিংক পাঠান।",
+      registrationSuccessTitle: "নিবন্ধন সফল হয়েছে!",
+      registrationSuccessDesc: "আপনার একাউন্ট তৈরি সম্পন্ন হয়েছে।",
+      checkInboxInstruction: "আপনার ইমেইল অ্যাড্রেসে একটি অ্যাক্টিভেশন লিংক পাঠানো হয়েছে। অনুগ্রহ করে ইনবক্স অথবা স্প্যাম ফোল্ডার চেক করে লিংকে ক্লিক করুন।",
+      emailVerifiedSuccess: "আপনার ইমেইল সফলভাবে ভেরিফাই করা হয়েছে! অনুগ্রহ করে লগইন করুন।",
+      guestSigningIn: "গেস্ট হিসেবে প্রবেশ করা হচ্ছে...",
     },
     dashboard: {
       title: "ড্যাশবোর্ড (ওভারভিউ)",
@@ -503,12 +541,22 @@ export const translations: Record<Language, Translations> = {
       fullName: "পুরো নাম",
       fullNamePlaceholder: "আপনার পুরো নাম লিখুন",
       emailAddress: "ইমেইল এড্রেস",
+      phoneNumber: "ফোন নম্বর",
+      phoneNumberPlaceholder: "আপনার যোগাযোগের ফোন নম্বর লিখুন (যেমন: 017XXXXXXXX)",
+      notProvided: "প্রদান করা হয়নি",
       accountRole: "অ্যাকাউন্ট রোল",
       userRole: "সাধারণ ব্যবহারকারী (User)",
       adminRole: "সিস্টেম অ্যাডমিনিস্ট্রেটর (Admin)",
       createdAt: "অ্যাকাউন্ট তৈরির তারিখ",
       avatarTitle: "প্রোফাইল পিকচার",
-      avatarDesc: "আপনার অ্যাকাউন্টের পরিচয়বাহী অ্যাভাটার",
+      avatarDesc: "আপনার অ্যাকাউন্টের পরিচয়বাহী ছবি",
+      uploadPhoto: "ছবি আপলোড করুন",
+      changePhoto: "ছবি পরিবর্তন করুন",
+      removePhoto: "ছবি মুছে ফেলুন",
+      photoUploadSuccess: "প্রোফাইল ছবি সফলভাবে আপলোড করা হয়েছে!",
+      photoUploadError: "ছবি আপলোড করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন (সর্বোচ্চ ২MB)।",
+      photoRemoveSuccess: "প্রোফাইল ছবি সফলভাবে মুছে ফেলা হয়েছে!",
+      guestProfileWarning: "আপনি বর্তমানে গেস্ট হিসেবে ব্রাউজ করছেন। ব্যক্তিগত প্রোফাইল তৈরি ও সংরক্ষণ করতে অনুগ্রহ করে একটি অ্যাকাউন্টে লগইন বা সাইন-আপ করুন।",
       backToDashboard: "ড্যাশবোর্ডে ফিরে যান",
       logout: "লগআউট করুন",
       updateSuccess: "আপনার প্রোফাইল তথ্য সফলভাবে আপডেট করা হয়েছে!",
@@ -580,6 +628,10 @@ export const translations: Record<Language, Translations> = {
       disclaimerTitle: "Important Disclaimer & Medical Notice:",
       disclaimerText: "Amar Owshodh is a reminder and personal record management tool only. It does not diagnose conditions, recommend medicines, determine dosages, or provide medical treatment advice. Always take medicines strictly according to instructions from a registered healthcare professional.",
       footerCopyright: "© 2026 Amar Owshodh (আমার ঔষধ). All rights reserved.",
+      guestBannerNotice: "You are currently in Guest Mode. This is for previewing demo interfaces only. Please login to save medicines or schedules.",
+      exitGuestMode: "Exit Guest Mode",
+      guestActionRestricted: "Please login or create an account to use this feature.",
+      loginToContinue: "Login / Register",
       daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       daysOfWeekShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -628,7 +680,17 @@ export const translations: Record<Language, Translations> = {
       forgotPassword: "Forgot password?",
       submitting: "Verifying...",
       registerAgreement: "By registering, you agree to our terms of service and healthcare disclaimer.",
-      guestDemo: "Explore Dashboard as Guest"
+      guestDemo: "Explore Dashboard as Guest",
+      resendVerification: "Resend Verification Email",
+      resending: "Sending verification link...",
+      verificationSentSuccess: "Verification email sent! Please check your inbox or spam folder.",
+      emailNotVerifiedTitle: "Email Verification Required",
+      emailNotVerifiedDesc: "Your email address has not been verified yet. Please check your inbox or request a new verification link.",
+      registrationSuccessTitle: "Registration Successful!",
+      registrationSuccessDesc: "Your account has been created successfully.",
+      checkInboxInstruction: "A verification link has been sent to your email. Please check your inbox or spam folder and click the link to activate your account.",
+      emailVerifiedSuccess: "Your email has been verified successfully! Please sign in.",
+      guestSigningIn: "Entering as guest...",
     },
     dashboard: {
       title: "Dashboard (Overview)",
@@ -774,12 +836,22 @@ export const translations: Record<Language, Translations> = {
       fullName: "Full Name",
       fullNamePlaceholder: "Enter your full name",
       emailAddress: "Email Address",
+      phoneNumber: "Phone Number",
+      phoneNumberPlaceholder: "Enter your contact phone number (e.g. 017XXXXXXXX)",
+      notProvided: "Not provided",
       accountRole: "Account Role",
       userRole: "Standard User",
       adminRole: "System Administrator (Admin)",
       createdAt: "Account Created On",
       avatarTitle: "Profile Picture",
       avatarDesc: "Your account avatar and visual badge",
+      uploadPhoto: "Upload Photo",
+      changePhoto: "Change Photo",
+      removePhoto: "Remove Photo",
+      photoUploadSuccess: "Profile photo uploaded successfully!",
+      photoUploadError: "Failed to upload photo. Please try again (Max size 2MB).",
+      photoRemoveSuccess: "Profile photo removed successfully!",
+      guestProfileWarning: "You are browsing as a guest. Please login or register to customize and persist your personal profile.",
       backToDashboard: "Back to Dashboard",
       logout: "Log Out",
       updateSuccess: "Your profile information has been successfully updated!",

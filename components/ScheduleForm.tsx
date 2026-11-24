@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Clock, Calendar, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react'
 import { createScheduleAction, type Medicine } from '@/app/actions/medicines'
 import { useLanguage } from '@/context/LanguageContext'
+import { useAuth } from '@/context/AuthContext'
 
 interface ScheduleFormProps {
   medicines: Medicine[]
@@ -19,6 +20,7 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
 }) => {
   const router = useRouter()
   const { t, lang } = useLanguage()
+  const { isGuest } = useAuth()
   const formRef = useRef<HTMLFormElement>(null)
   const [error, setError] = useState<string | null>(null)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
@@ -55,6 +57,11 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (isLoading) return
+
+    if (isGuest) {
+      window.location.href = '/login?message=guest_restricted'
+      return
+    }
 
     setError(null)
     setSuccessMsg(null)

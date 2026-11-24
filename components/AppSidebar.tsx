@@ -23,7 +23,7 @@ import { useLanguage } from "@/context/LanguageContext";
 
 export const AppSidebar: React.FC = () => {
   const pathname = usePathname();
-  const { profile, signOut } = useAuth();
+  const { profile, signOut, isGuest, exitGuestMode } = useAuth();
   const { t, language } = useLanguage();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const isAdmin = profile?.role === "admin";
@@ -87,13 +87,23 @@ export const AppSidebar: React.FC = () => {
       </div>
 
       <div className="p-4 border-t border-[#E2E8F0]">
-        <button
-          onClick={() => signOut()}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#DC2626] transition-colors cursor-pointer"
-        >
-          <LogOut className="w-5 h-5" />
-          <span>{t.common.logout}</span>
-        </button>
+        {isGuest ? (
+          <button
+            onClick={() => exitGuestMode()}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-colors cursor-pointer shadow-2xs"
+          >
+            <LogOut className="w-5 h-5 text-amber-700" />
+            <span>{t.common.exitGuestMode}</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => signOut()}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#DC2626] transition-colors cursor-pointer"
+          >
+            <LogOut className="w-5 h-5" />
+            <span>{t.common.logout}</span>
+          </button>
+        )}
       </div>
     </div>
   );

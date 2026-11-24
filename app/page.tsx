@@ -1,12 +1,26 @@
 'use client';
 
+import { useState } from "react";
 import Link from "next/link";
-import { Pill, ShieldCheck, Clock, Calendar, CheckCircle2, ArrowRight } from "lucide-react";
+import { Pill, ShieldCheck, Clock, Calendar, CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { guestLoginAction } from "@/app/actions/auth";
 
 export default function HomePage() {
   const { t, language } = useLanguage();
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+
+  const handleGuestDemo = async () => {
+    setIsDemoLoading(true);
+    try {
+      await guestLoginAction();
+    } catch {
+      window.location.href = '/dashboard';
+    } finally {
+      setIsDemoLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
@@ -62,12 +76,20 @@ export default function HomePage() {
               {t.home.getStarted}
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link
-              href="/dashboard"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border border-[#E2E8F0] text-[#1E293B] font-medium px-6 py-3 rounded-lg transition-colors text-base"
+            <button
+              onClick={handleGuestDemo}
+              disabled={isDemoLoading}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border border-[#E2E8F0] text-[#1E293B] font-medium px-6 py-3 rounded-lg transition-colors text-base shadow-2xs cursor-pointer disabled:opacity-70"
             >
-              {t.home.viewDemo}
-            </Link>
+              {isDemoLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
+                  <span>{t.auth.guestSigningIn}</span>
+                </>
+              ) : (
+                <span>{t.home.viewDemo}</span>
+              )}
+            </button>
           </div>
 
           {/* Medical Disclaimer Banner */}

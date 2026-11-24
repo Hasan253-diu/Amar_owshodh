@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { Pill, Clock, CheckCircle2, AlertCircle, Plus, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 import type { IntakeLog } from "@/app/actions/intake";
 
 interface DashboardViewProps {
@@ -24,6 +25,7 @@ interface DashboardViewProps {
 
 export const DashboardView: React.FC<DashboardViewProps> = ({ stats, todayLogs }) => {
   const { t, formatNumber } = useLanguage();
+  const { isGuest } = useAuth();
 
   return (
     <div className="space-y-6">
@@ -33,7 +35,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ stats, todayLogs }
         description={t.dashboard.description}
       >
         <Link
-          href="/medicines/new"
+          href={isGuest ? "/login?message=guest_restricted" : "/medicines/new"}
           className="inline-flex items-center gap-2 bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-xs"
         >
           <Plus className="w-4 h-4" />

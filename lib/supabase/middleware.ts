@@ -45,6 +45,9 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
+  const isGuest = request.cookies.get('amar_owshodh_guest')?.value === 'true'
+  const isRealUser = !!user && !user.is_anonymous && !isGuest
+  const isAuthenticated = isRealUser || isGuest
 
   // Protected application routes
   const protectedPrefixes = [
@@ -63,24 +66,40 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith(prefix)
   )
 
-  // Auth pages (redirect to dashboard if already logged in)
+  // Auth pages
   const isAuthRoute = pathname === '/login' || pathname === '/register'
 
-  if (isProtectedRoute && !user) {
+  // If a guest attempts to visit creation/mutation pages, redirect to login with friendly message
+  if (isGuest && (pathname === '/medicines/new' || pathname.startsWith('/medicines/new'))) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    url.searchParams.set('message', 'guest_restricted')
+    return NextResponse.redirect(url)
+  }
+
+  if (isProtectedRoute && !isAuthenticated) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.searchParams.set('redirectedFrom', pathname)
     return NextResponse.redirect(url)
   }
 
-  if (isAuthRoute && user) {
+  // Only real registered users are redirected to dashboard from login/register.
+  // Guests are allowed to navigate freely to login/register to sign in or create an account.
+  if (isAuthRoute && isRealUser) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 
-  // Admin route protection: check role
-  if (pathname.startsWith('/admin') && user) {
+  // Admin route protection: check role (always block guests from admin)
+  if (pathname.startsWith('/admin')) {
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
+
     const { data } = await supabase
       .from('profiles')
       .select('role')

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Pill, Calendar, FileText, AlertCircle, Loader2 } from 'lucide-react'
 import { createMedicineAction, updateMedicineAction, type Medicine } from '@/app/actions/medicines'
 import { useLanguage } from '@/context/LanguageContext'
+import { useAuth } from '@/context/AuthContext'
 
 interface MedicineFormProps {
   initialData?: Medicine
@@ -14,6 +15,7 @@ interface MedicineFormProps {
 export const MedicineForm: React.FC<MedicineFormProps> = ({ initialData, isEdit = false }) => {
   const router = useRouter()
   const { t, lang } = useLanguage()
+  const { isGuest } = useAuth()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -27,6 +29,10 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ initialData, isEdit 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (isGuest) {
+      window.location.href = '/login?message=guest_restricted'
+      return
+    }
     setError(null)
     setIsLoading(true)
 

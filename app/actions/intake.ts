@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { Database } from '@/types/database.types'
 
@@ -173,11 +174,16 @@ export async function recordIntakeStatusAction(
   status: 'taken' | 'skipped',
   notes?: string
 ): Promise<ActionResponse<IntakeLog>> {
+  const cookieStore = await cookies()
+  const isGuestCookie = cookieStore.get('amar_owshodh_guest')?.value === 'true'
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    return { success: false, error: 'অননুমোদিত অনুরোধ' }
+  if (isGuestCookie || !user || user.is_anonymous || user.id === 'guest-preview-user') {
+    return {
+      success: false,
+      error: 'এই সুবিধাটি ব্যবহার করতে অনুগ্রহ করে লগইন বা রেজিস্ট্রেশন করুন। (Please login or create an account to use this feature.)',
+    }
   }
 
   const { data, error } = await supabase
